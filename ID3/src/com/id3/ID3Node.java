@@ -7,8 +7,13 @@ import java.util.List;
 import javax.swing.text.AsyncBoxView.ChildLocator;
 
 public class ID3Node {
-	private Enum attribute;
-	public ID3Node(Enum attribute){
+	
+	private Attribute attribute;
+	/**
+	 * 这个节点依照attribute 属性来进行分类
+	 * @param attribute
+	 */
+	public ID3Node(Attribute attribute){
 		this.attribute = attribute;
 		child = new ArrayList<ID3Node>();
 		iter = child.iterator();
