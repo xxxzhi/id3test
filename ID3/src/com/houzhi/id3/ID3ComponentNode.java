@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.houzhi.id3.uitl.Attribute;
+import com.houzhi.id3.uitl.AttributeFactory;
 
 public class ID3ComponentNode extends ID3Node {
 
@@ -12,12 +12,12 @@ public class ID3ComponentNode extends ID3Node {
 //		super(attribute);
 //		// TODO Auto-generated constructor stub
 //	}
-	private Attribute attribute;
+	private AttributeFactory attribute;
 	/**
 	 * 这个节点依照attribute 属性来进行分类
 	 * @param attribute
 	 */
-	public ID3ComponentNode(Attribute attribute){
+	public ID3ComponentNode(AttributeFactory attribute){
 		this.attribute = attribute;
 		child = new ArrayList<ID3Node>();
 		iter = child.iterator();
@@ -31,5 +31,10 @@ public class ID3ComponentNode extends ID3Node {
 	private Iterator<ID3Node> iter = null;
 	public ID3Node next(){
 		return iter.next();
+	}
+	@Override
+	public void print() {
+		// TODO Auto-generated method stub
+		System.out.println(attribute.)
 	}
 }

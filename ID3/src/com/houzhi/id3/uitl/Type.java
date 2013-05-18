@@ -1,33 +1,28 @@
 package com.houzhi.id3.uitl;
 
-import java.util.List;
+public class Type {
 
-public abstract class Type<T> extends Attribute<T> {
-	private int  cur;
-	public Type(List<T> t) {
-		super(t);
-		// TODO Auto-generated constructor stub
+	private int id;
+	private boolean isAll;
+	public Type(int id){
+		this.setId(id);
 	}
-	protected boolean isAll;
+	public int getId() {
+		if(isAll){
+			return -1;
+		}
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	
-	public Type<T> setCur(int i){
-		this.cur = i;
-		return this;
-	}
 	/**
 	 * 标志此处分类为所有，也就是分类树中没有此类
 	 * @return
 	 */
-	public Type<T> initAll(){
+	public Type initAll(){
 		isAll = true;
 		return this;
 	}
-
-	/**
-	 * 返回一个复制的实例，深度复制
-	 * @return
-	 */
-	public abstract Type<T> copy();
-	
-	
 }

@@ -32,4 +32,11 @@ public class ID3Tree<T extends ID3Node> {
 		addChild(tree.getRoot());
 //		curNode.addNode(tree.getRoot());
 	}
+	/**
+	 * 打印树
+	 */
+	public void print() {
+		// TODO Auto-generated method stub
+		root.print();
+	}
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.houzhi.id3.uitl.Type;
+import com.houzhi.id3.uitl.TypeFactory;
 
-public class IrisType extends Type<String> {
+public class IrisType extends TypeFactory<String> {
 
 	public IrisType(List<String> t) {
 		super(t);
@@ -14,7 +14,7 @@ public class IrisType extends Type<String> {
 	}
 
 	@Override
-	public Type<String> copy() {
+	public TypeFactory<String> copy() {
 		// TODO Auto-generated method stub
 		return new IrisType(new ArrayList<String>((listAttribute)));
 	}

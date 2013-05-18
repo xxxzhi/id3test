@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.swing.text.AsyncBoxView.ChildLocator;
 
-import com.houzhi.id3.uitl.Attribute;
+import com.houzhi.id3.uitl.AttributeFactory;
 
-public class ID3Node {
+public abstract class ID3Node {
 	
 //	private Attribute attribute;
 //	/**
@@ -32,5 +32,10 @@ public class ID3Node {
 //	}
 	
 	public ID3Node(){
+		
 	}
+	/**
+	 * 打印节点
+	 */
+	public abstract void print();
 }

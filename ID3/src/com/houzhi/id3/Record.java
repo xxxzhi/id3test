@@ -35,7 +35,10 @@ public class Record {
 	public Integer get(int position){
 		return record.get(position);
 	}
-
+	
+	public Integer getType(){
+		return record.get(size()-1);
+	}
 
 	@Override
 	public String toString() {

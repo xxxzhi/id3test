@@ -3,23 +3,25 @@ package com.houzhi.id3;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import com.houzhi.id3.uitl.Type;
-import com.houzhi.id3.uitl.Attribute;
+import com.houzhi.id3.uitl.TypeFactory;
+import com.houzhi.id3.uitl.AttributeFactory;
 
 public class ID3<T,T1> {
 	class AttributePair{
-		public AttributePair(Attribute<T> a,int p){
+		public AttributePair(AttributeFactory<T> a,int p){
 			this.attribute = a;
 			this.position = p;
 		}
-		Attribute<T> attribute;
+		AttributeFactory<T> attribute;
 		int position;
 	}
-	private Type<T1> type;
-	private List<Attribute<T>> attributeList;
+	private TypeFactory<T1> type;
+	private List<AttributeFactory<T>> attributeList;
 	private List<Record> samples;
 	private ID3Tree<ID3Node> tree = new ID3Tree<ID3Node>();
-	public ID3(List<Attribute<T>> attributeList,List<Record> samples,Type<T1> type){
+	public ID3(List<AttributeFactory<T>> attributeList,List<Record> samples,TypeFactory<T1> type){
 		this.type = type;
 		if(samples.size()<=0){
 			throw new IllegalArgumentException("samples.size()<0");
@@ -36,9 +38,9 @@ public class ID3<T,T1> {
 	 * 建造id3
 	 */
 	public void buildID3(){
-		tree.addChildTree(buildID3Inner(new ArrayList<Attribute<T>>(attributeList),samples));
+		tree.addChildTree(buildID3Inner(new ArrayList<AttributeFactory<T>>(attributeList),samples));
 	}
-	private ID3Tree<ID3Node> buildID3Inner(List<Attribute<T>> copyAttribtes,List<Record> samples){
+	private ID3Tree<ID3Node> buildID3Inner(List<AttributeFactory<T>> copyAttribtes,List<Record> samples){
 		
 		AttributePair pair = countAttributes(copyAttribtes,samples);
 		//构建树
@@ -62,7 +64,7 @@ public class ID3<T,T1> {
 			int cur = isSameType(lsamples.get(i));
 			if(cur!=-1){
 				//同一个类型
-				child.addChild(new ID3LeafNode(type.copy().setCur(cur)));
+				child.addChild(new ID3LeafNode(new Type(cur)));
 				continue;
 			}
 			
@@ -71,20 +73,20 @@ public class ID3<T,T1> {
 				child.addChildTree(buildID3Inner(copyAttribtes, lsamples.get(i)));
 			}else{
 				//该分类后没有记录,
-				child.addChild(new ID3LeafNode(type.copy().initAll()));
+				child.addChild(new ID3LeafNode(new Type(cur).initAll()));
 			}
 		}
 		copyAttribtes.add(index, pair.attribute);
 		return child;
 	}
 	
-	public AttributePair countAttributes(List<Attribute<T>> attributes,List<Record> samples){
+	public AttributePair countAttributes(List<AttributeFactory<T>> attributes,List<Record> samples){
 		double entropy;
-		double min = 0;			//计算最小熵
-		Attribute<T> selectAttributes = null;
+		double min = 1000000000;			//计算最小熵
+		AttributeFactory<T> selectAttributes = null;
 		int position =0;
 		int i=0;
-		for(Attribute<T> e:attributes){
+		for(AttributeFactory<T> e:attributes){
 			//计算熵值 并且比较获得最小熵的属性
 			entropy = countEntropy(e,samples,i);
 			if(min>=entropy){
@@ -102,22 +104,46 @@ public class ID3<T,T1> {
 	 * @param attributes
 	 * @return
 	 */
-	private double countEntropy(Attribute<T> attributes,List<Record> samples,int attributesPosition){
+	private double countEntropy(AttributeFactory<T> attributes,List<Record> samples,int attributesPosition){
 		List<Integer> listId = attributes.idList();  //属性值
 		List<Integer> nums = new ArrayList<Integer>();		//总共属性值的个数
-		for(int i=0;i!=listId.size();++i){				//初始化
+		List<List<Integer>> type = new ArrayList<List<Integer>>();
+		for(int i=0;i!=listId.size();++i){				//初始化，区分出属性。
 			nums.add(new Integer(0));
+			ArrayList<Integer> arr = new ArrayList<Integer>();
+			for(int j=0;j!=this.type.idList().size();++j){
+				arr.add(0);
+			}
+			type.add(arr);
 		}
+		
 		int sum = samples.size();
 		for(Record record:samples){
-			int position = attributes.idPosition(record.get(attributesPosition));
+			int position = attributes.idPosition(
+					record.get(attributesPosition));		//属性值
 			nums.set(position, nums.get(position)+1);
+			int typePosition = this.type.idPosition(record.getType());
+			type.get(position).set(typePosition, 
+					type.get(position).get(typePosition)+1);
 		}
 		double entropy = 0;
 		//计算熵
 		for(int i=0;i!=listId.size();++i){
-			double temp = nums.get(i)/sum;
-			entropy+=(-temp*Math.log(temp));
+			
+			double temp = nums.get(i)/(double)sum;       //Esij/sum
+			if(temp==0){
+				continue;
+			}
+			double I=0;
+			for(int j=0;j!=this.type.idList().size();++j){
+				double entropyItemp = 
+				type.get(i).get(j)/(double)nums.get(i);
+				if(entropyItemp==0){
+					continue;
+				}
+				I+=(-entropyItemp*Math.log(entropyItemp)/Math.log(2));
+			}
+			entropy+=temp*I;
 		}
 		return entropy;
 	}
@@ -138,5 +164,10 @@ public class ID3<T,T1> {
 			}
 		}
 		return last.get(lastIndex);
+	}
+	
+	
+	public void printID3Tree(){
+		tree.print();
 	}
 }

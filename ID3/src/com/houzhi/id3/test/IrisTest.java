@@ -6,7 +6,8 @@ import java.util.List;
 import com.houzhi.id3.ID3;
 import com.houzhi.id3.ID3ComponentNode;
 import com.houzhi.id3.Record;
-import com.houzhi.id3.uitl.Attribute;
+import com.houzhi.id3.uitl.AttributeFactory;
+import com.houzhi.id3.uitl.TypeFactory;
 
 public class IrisTest {
 
@@ -22,12 +23,12 @@ public class IrisTest {
 		System.out.println(iris.petalLength.getListAttribute());
 		System.out.println(iris.type.getListAttribute());
 		
-		List<Attribute> attributeList = new ArrayList<Attribute>();
+		List<AttributeFactory> attributeList = new ArrayList<AttributeFactory>();
 		attributeList.add(iris.sepalLength);
 		attributeList.add(iris.sepalWidth);
 		attributeList.add(iris.petalLength);
 		attributeList.add(iris.petalWidth);
-		ID3 id3 = new ID3(attributeList, list, iris.type);
+		ID3<Float, String> id3 = new ID3(attributeList, list, iris.type);
 		id3.buildID3();
 	} 
 
