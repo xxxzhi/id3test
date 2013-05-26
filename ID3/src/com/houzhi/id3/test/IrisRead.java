@@ -10,14 +10,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import scut.houzhi.id3.util.AbsAttribute;
+
 import com.houzhi.id3.Record;
 import com.houzhi.id3.io.IORead;
+import com.houzhi.id3.uitl.Attribute;
 
 public class IrisRead extends IORead {
-	IrisPetalLength petalLength ;
-	IrisPetalWidth petalWidth;
-	IrisSepalLength sepalLength;
-	IrisSepalWidth sepalWidth;
+	IrisPetalLengthFactory petalLength ;
+	IrisPetalWidthFactory petalWidth;
+	IrisSepalLengthFactory sepalLength;
+	IrisSepalWidthFactory sepalWidth;
 	IrisType type;
 	public IrisRead(String name) {
 		super(name);
@@ -29,14 +32,14 @@ public class IrisRead extends IORead {
 			t.add(Float.valueOf(format.format(i)));
 			i=i+0.1f;
 		}
-		petalLength = new IrisPetalLength(t);
+		petalLength = new IrisPetalLengthFactory(t);
 		t = new ArrayList<Float>();
 		i = 0.1f;
 		while(i<=2.5){
 			t.add(Float.valueOf(format.format(i)));
 			i=i+0.1f;
 		}
-		petalWidth = new IrisPetalWidth(t);
+		petalWidth = new IrisPetalWidthFactory(t);
 		
 		t = new ArrayList<Float>();
 		i = 4.3f;
@@ -44,7 +47,7 @@ public class IrisRead extends IORead {
 			t.add(Float.valueOf(format.format(i)));
 			i=i+0.1f;
 		}
-		sepalLength = new IrisSepalLength(t);
+		sepalLength = new IrisSepalLengthFactory(t);
 		
 		t = new ArrayList<Float>();
 		i = 2.0f;
@@ -52,7 +55,7 @@ public class IrisRead extends IORead {
 			t.add(Float.valueOf(format.format(i)));
 			i=i+0.1f;
 		}
-		sepalWidth = new IrisSepalWidth(t);
+		sepalWidth = new IrisSepalWidthFactory(t);
 		
 		List<String> list = new ArrayList<String>();
 		list.add("Iris-setosa");
@@ -71,8 +74,8 @@ public class IrisRead extends IORead {
 				return null;
 			}
 			String values[] = line.split(",");
-			List<Integer> list = new ArrayList<Integer>();
-			list.add(sepalLength.id(Float.valueOf(values[0])));
+			List<AbsAttribute> list = new ArrayList<AbsAttribute>();
+			list.add(sepalLength.factory(Float.valueOf(values[0])));
 			list.add(sepalWidth.id(Float.valueOf(values[1])));
 			list.add(petalLength.id(Float.valueOf(values[2])));
 			list.add(petalWidth.id(Float.valueOf(values[3])));

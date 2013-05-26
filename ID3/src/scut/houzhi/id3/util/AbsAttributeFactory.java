@@ -1,29 +1,36 @@
-/**
- * 属性类，所有的属性都继承这个类
- * 其中每个属性值对应一个id 必须保证id不一样。
- */
-package com.houzhi.id3.uitl;
+package scut.houzhi.id3.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AttributeFactory<T>  {
+import com.houzhi.id3.uitl.Attribute;
+
+import scut.houzhi.id3.util.AbsAttribute;
+
+public abstract class AbsAttributeFactory<T>{
+    private AbsAttribute absAttribute;
+
+    
+//    public List<AbsAttribute> getListAttribute(){
+//		return null;
+//    }
+	
+    public List<T> getListSourceAttribute(){
+    	return new ArrayList<T>(listAttribute);	
+    }
+	
 	protected List<T> listAttribute;
 	protected List<Integer> listId;
 	/**
 	 *
 	 * @param t 总共的属性集
 	 */
-	public AttributeFactory(List<T> t){
+	public AbsAttributeFactory(List<T> t){
 		listAttribute = new ArrayList<T>(t);
 		listId = new ArrayList<Integer>();
 		for(int i=0;i!=listAttribute.size();++i){
 			listId.add(i);
 		}
-	}
-	
-	public List<T> getListAttribute(){
-		return new ArrayList<T>(listAttribute);
 	}
 	
 	/**
@@ -55,11 +62,9 @@ public abstract class AttributeFactory<T>  {
 	 * @param id
 	 * @return
 	 */
-	public Attribute factory(int id){
-		return new Attribute(id);
-	}
+	public abstract AbsAttribute factory(int id);
 	
-	public Attribute factory(T t){
+	public AbsAttribute factory(T t){
 		return factory(listAttribute.indexOf(t));
 	}
 }

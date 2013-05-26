@@ -6,14 +6,16 @@ package com.houzhi.id3;
 
 import java.util.List;
 
+import scut.houzhi.id3.util.AbsAttribute;
+
 public class Record {
-	private List<Integer> record;
+	private List<AbsAttribute> record;
 	
 	/**
 	 * 记录
 	 * @param record 一列属性，用integer 代替的属性。最后一条记录为类型代号
 	 */
-	public Record(List<Integer> record){
+	public Record(List<AbsAttribute> record){
 		this.setRecord(record);
 	}
 	
@@ -21,10 +23,10 @@ public class Record {
 		return record.size();
 	}
 	
-	public List<Integer> getRecord() {
+	public List<AbsAttribute> getRecord() {
 		return record;
 	}
-	public void setRecord(List<Integer> record) {
+	public void setRecord(List<AbsAttribute> record) {
 		this.record = record;
 	}
 	/**
@@ -32,11 +34,11 @@ public class Record {
 	 * @param position
 	 * @return
 	 */
-	public Integer get(int position){
+	public AbsAttribute get(int position){
 		return record.get(position);
 	}
 	
-	public Integer getType(){
+	public AbsAttribute getType(){
 		return record.get(size()-1);
 	}
 

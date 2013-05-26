@@ -4,24 +4,27 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.houzhi.id3.uitl.Type;
-import com.houzhi.id3.uitl.TypeFactory;
-import com.houzhi.id3.uitl.AttributeFactory;
+import scut.houzhi.id3.struct.ID3ComponentNode;
+import scut.houzhi.id3.struct.ID3LeafNode;
+import scut.houzhi.id3.struct.ID3Node;
+import scut.houzhi.id3.util.AbsAttributeFactory;
+import scut.houzhi.id3.util.Type;
+
 
 public class ID3<T,T1> {
 	class AttributePair{
-		public AttributePair(AttributeFactory<T> a,int p){
+		public AttributePair(AbsAttributeFactory<T> a,int p){
 			this.attribute = a;
 			this.position = p;
 		}
-		AttributeFactory<T> attribute;
+		AbsAttributeFactory<T> attribute;
 		int position;
 	}
 	private TypeFactory<T1> type;
 	private List<AttributeFactory<T>> attributeList;
 	private List<Record> samples;
-	private ID3Tree<ID3Node> tree = new ID3Tree<ID3Node>();
-	public ID3(List<AttributeFactory<T>> attributeList,List<Record> samples,TypeFactory<T1> type){
+	private ID3Tree tree = new ID3Tree();
+	public ID3(List<Record> samples,TypeFactory<T1> type){
 		this.type = type;
 		if(samples.size()<=0){
 			throw new IllegalArgumentException("samples.size()<0");
@@ -40,12 +43,13 @@ public class ID3<T,T1> {
 	public void buildID3(){
 		tree.addChildTree(buildID3Inner(new ArrayList<AttributeFactory<T>>(attributeList),samples));
 	}
-	private ID3Tree<ID3Node> buildID3Inner(List<AttributeFactory<T>> copyAttribtes,List<Record> samples){
+	
+	private ID3Tree buildID3Inner(List<AttributeFactory<T>> copyAttribtes,List<Record> samples){
 		
 		AttributePair pair = countAttributes(copyAttribtes,samples);
 		//构建树
-		ID3Node node = new ID3ComponentNode(pair.attribute);
-		ID3Tree<ID3Node> child = new ID3Tree<ID3Node>(node);
+		ID3Node node = new ID3ComponentNode(pair.position);
+		ID3Tree child = new ID3Tree(node);
 		
 		//分割samples
 		List<List<Record>> lsamples = new ArrayList<List<Record>>();
@@ -54,7 +58,7 @@ public class ID3<T,T1> {
 			lsamples.add(new LinkedList<Record>());
 		}
 		for(Record record:samples){
-			int attId = record.get(pair.position);
+			int attId = record.get(pair.position).getValue();
 			lsamples.get(pair.attribute.idPosition(attId)).add(record);
 		}
 		//删除属性,递归构造
@@ -64,7 +68,7 @@ public class ID3<T,T1> {
 			int cur = isSameType(lsamples.get(i));
 			if(cur!=-1){
 				//同一个类型
-				child.addChild(new ID3LeafNode(new Type(cur)));
+				child.addChild(new ID3LeafNode(new scut.houzhi.id3.util.Type(cur)));
 				continue;
 			}
 			
